@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect x="16" y="16" width="480" height="480" rx="96" ry="96" fill="url(#bg)"/>
+  
+  <!-- Waveform bars (centered, 5 bars with varying heights) -->
+  <g fill="url(#wave)">
+    <!-- Bar 1 (left) -->
+    <rect x="96" y="206" width="40" height="100" rx="20"/>
+    <!-- Bar 2 -->
+    <rect x="168" y="156" width="40" height="200" rx="20"/>
+    <!-- Bar 3 (center, tallest) -->
+    <rect x="236" y="106" width="40" height="300" rx="20"/>
+    <!-- Bar 4 -->
+    <rect x="304" y="156" width="40" height="200" rx="20"/>
+    <!-- Bar 5 (right) -->
+    <rect x="376" y="206" width="40" height="100" rx="20"/>
+  </g>
+</svg>

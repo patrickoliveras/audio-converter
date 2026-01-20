@@ -1,0 +1,81 @@
+{
+  "name": "waveshift",
+  "version": "0.1.0",
+  "description": "Self-contained Electron app to convert single audio files (e.g. .wav) to .m4a (AAC).",
+  "author": "Waveshift",
+  "private": true,
+  "main": "dist/main/main.js",
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "npm run build && electron .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier -w .",
+    "dist": "npm run build && electron-builder --dir",
+    "release": "npm run build && electron-builder",
+    "release:zip": "npm run build && electron-builder --mac zip",
+    "icons": "node scripts/generate-icons.mjs"
+  },
+  "dependencies": {
+    "electron-log": "^5.3.0",
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "autoprefixer": "^10.4.20",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.21.5",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "png-to-ico": "^2.1.8",
+    "postcss": "^8.4.49",
+    "prettier": "^3.2.5",
+    "sharp": "^0.33.5",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "build": {
+    "appId": "com.waveshift.audioconverter",
+    "productName": "Waveshift",
+    "directories": {
+      "output": "release"
+    },
+    "afterPack": "scripts/afterPack.mjs",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/ffmpeg-static/**",
+      "**/node_modules/ffprobe-static/**"
+    ],
+    "mac": {
+      "target": ["dmg", "zip"],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.music"
+    },
+    "win": {
+      "target": ["nsis"],
+      "icon": "resources/icon.ico"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "icon": "resources/icons",
+      "category": "Audio"
+    }
+  }
+}
+
