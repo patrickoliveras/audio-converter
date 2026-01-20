@@ -44,4 +44,3 @@ export type I18nBundle = {
   locale: string;
   translations: Record<string, string>;
 };
-

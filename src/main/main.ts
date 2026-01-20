@@ -44,7 +44,12 @@ function setAppMenu(): void {
     });
   }
 
-  template.push({ role: 'fileMenu' }, { role: 'editMenu' }, { role: 'viewMenu' }, { role: 'windowMenu' });
+  template.push(
+    { role: 'fileMenu' },
+    { role: 'editMenu' },
+    { role: 'viewMenu' },
+    { role: 'windowMenu' }
+  );
 
   template.push({
     role: 'help',
@@ -87,4 +92,3 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
-

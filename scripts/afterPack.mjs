@@ -13,4 +13,3 @@ export default async function afterPack(context) {
 
   execFileSync('codesign', ['--force', '--deep', '--sign', '-', appPath], { stdio: 'inherit' });
 }
-

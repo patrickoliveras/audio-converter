@@ -59,6 +59,8 @@ export function t(
 /**
  * Create a bound translate function for a specific locale.
  */
-export function createTranslator(locale: LocaleCode): (key: TranslationKey | string, params?: Record<string, string>) => string {
+export function createTranslator(
+  locale: LocaleCode
+): (key: TranslationKey | string, params?: Record<string, string>) => string {
   return (key, params) => t(key, locale, params);
 }

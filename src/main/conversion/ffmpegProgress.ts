@@ -13,7 +13,8 @@ function parseFfmpegOutTimeToUs(value: string): number | null {
   const minutes = Number(m[2]);
   const seconds = Number(m[3]);
 
-  if (!Number.isFinite(hours) || !Number.isFinite(minutes) || !Number.isFinite(seconds)) return null;
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes) || !Number.isFinite(seconds))
+    return null;
 
   const fractional = m[4] ?? '';
   // Pad/truncate to microseconds precision.
@@ -71,4 +72,3 @@ export class FfmpegProgressParser {
     return snapshots;
   }
 }
-

@@ -1,35 +1,35 @@
 {
   "app.name": "Waveshift",
-  
+
   "idle.dropFile": "Suelta un archivo de audio",
   "idle.clickToBrowse": "o haz clic para buscar",
-  
+
   "ready.input": "Entrada",
   "ready.output": "Salida",
   "ready.convert": "Convertir a M4A",
   "ready.changeFile": "Elegir otro archivo",
   "ready.changeFolder": "Cambiar carpeta de salida",
-  
+
   "converting.title": "Convirtiendo...",
   "converting.cancel": "Cancelar",
-  
+
   "done.title": "¡Listo!",
   "done.showInFinder": "Mostrar en Finder",
   "done.convertAnother": "Convertir otro",
-  
+
   "error.title": "Error de conversión",
   "error.generic": "Algo salió mal.",
   "error.viewLogs": "Ver registros",
   "error.tryAgain": "Reintentar",
-  
+
   "footer.logs": "Registros",
   "footer.notifications": "Notificaciones",
-  
+
   "settings.notificationsOn": "Notificaciones activadas",
   "settings.notificationsOff": "Notificaciones desactivadas",
-  
+
   "confirm.overwrite": "El archivo de salida ya existe. ¿Sobrescribir?",
-  
+
   "notification.done.title": "Conversión completada",
   "notification.done.body": "{filename} está listo"
 }

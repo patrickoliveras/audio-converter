@@ -20,4 +20,3 @@ export const Ipc = {
   EventDone: 'audioConverter:event:done',
   EventError: 'audioConverter:event:error'
 } as const;
-

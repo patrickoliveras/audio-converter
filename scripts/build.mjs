@@ -19,10 +19,10 @@ async function main() {
   await fs.rm(distDir, { recursive: true, force: true });
 
   // Compile Tailwind CSS
-  execSync(
-    'npx tailwindcss -i src/renderer/input.css -o dist/renderer/styles.css --minify',
-    { cwd: root, stdio: 'inherit' }
-  );
+  execSync('npx tailwindcss -i src/renderer/input.css -o dist/renderer/styles.css --minify', {
+    cwd: root,
+    stdio: 'inherit'
+  });
 
   // Main process
   await build({
@@ -71,4 +71,3 @@ main().catch((err) => {
   console.error(err);
   process.exitCode = 1;
 });
-

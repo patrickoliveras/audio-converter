@@ -3,12 +3,14 @@
 A small, self-contained **Electron desktop app** that converts audio files to **`.m4a` (AAC)**—one file at a time, no fuss.
 
 ### Features
+
 - Drag & drop or file picker
 - Progress bar with cancel
 - Bundled FFmpeg—no external install needed
 - macOS-first (Windows/Linux scaffolded)
 
 ### Spec
+
 See `SPEC.md` for full product + technical details.
 
 ---
@@ -83,4 +85,3 @@ Then try opening again.
 
 - **Apple Silicon vs Intel**: `arm64` builds won’t run on Intel Macs. Build an `x64` (or universal) mac target if you need to support Intel.
 - **Optional**: set `WAVESHIFT_SKIP_ADHOC_SIGN=1` to skip ad-hoc signing during packaging (not recommended for sharing builds).
-

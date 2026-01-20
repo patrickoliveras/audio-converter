@@ -8,7 +8,13 @@ import { normalizeLocale, t } from '../shared/i18n';
 import en from '../shared/i18n/locales/en.json';
 import es from '../shared/i18n/locales/es.json';
 import { Ipc } from '../shared/ipc';
-import type { AppSettings, I18nBundle, SelectedFile, SelectedFolder, StartConversionRequest } from '../shared/types';
+import type {
+  AppSettings,
+  I18nBundle,
+  SelectedFile,
+  SelectedFolder,
+  StartConversionRequest
+} from '../shared/types';
 import { AppError } from './appError';
 import { ConversionManager } from './conversion/ConversionManager';
 import { loadSettings, updateSettings } from './settings';
@@ -28,7 +34,9 @@ async function pathExists(targetPath: string): Promise<boolean> {
   }
 }
 
-export function registerIpcHandlers(getMainWindowWebContents: () => Electron.WebContents | null): void {
+export function registerIpcHandlers(
+  getMainWindowWebContents: () => Electron.WebContents | null
+): void {
   const conversions = new ConversionManager();
 
   ipcMain.handle(Ipc.SelectInputFile, async (): Promise<SelectedFile | null> => {
@@ -60,19 +68,22 @@ export function registerIpcHandlers(getMainWindowWebContents: () => Electron.Web
     return { path: folderPath };
   });
 
-  ipcMain.handle(Ipc.SelectOutputFile, async (_event, defaultPath: unknown): Promise<{ path: string } | null> => {
-    if (!isNonEmptyString(defaultPath)) {
-      throw new AppError('INVALID_REQUEST', 'defaultPath must be a string.');
+  ipcMain.handle(
+    Ipc.SelectOutputFile,
+    async (_event, defaultPath: unknown): Promise<{ path: string } | null> => {
+      if (!isNonEmptyString(defaultPath)) {
+        throw new AppError('INVALID_REQUEST', 'defaultPath must be a string.');
+      }
+
+      const result = await dialog.showSaveDialog({
+        defaultPath,
+        filters: [{ name: 'M4A Audio', extensions: ['m4a'] }]
+      });
+
+      if (result.canceled || !result.filePath) return null;
+      return { path: result.filePath };
     }
-
-    const result = await dialog.showSaveDialog({
-      defaultPath,
-      filters: [{ name: 'M4A Audio', extensions: ['m4a'] }]
-    });
-
-    if (result.canceled || !result.filePath) return null;
-    return { path: result.filePath };
-  });
+  );
 
   ipcMain.handle(
     Ipc.SuggestOutputPath,
@@ -114,34 +125,37 @@ export function registerIpcHandlers(getMainWindowWebContents: () => Electron.Web
     shell.showItemInFolder(logPath);
   });
 
-  ipcMain.handle(Ipc.StartConversion, async (_event, req: StartConversionRequest): Promise<{ jobId: string }> => {
-    const send = (channel: string, payload: unknown) => {
-      const wc = getMainWindowWebContents();
-      if (!wc) return;
-      wc.send(channel, payload);
-    };
+  ipcMain.handle(
+    Ipc.StartConversion,
+    async (_event, req: StartConversionRequest): Promise<{ jobId: string }> => {
+      const send = (channel: string, payload: unknown) => {
+        const wc = getMainWindowWebContents();
+        if (!wc) return;
+        wc.send(channel, payload);
+      };
 
-    return await conversions.start(req, {
-      onProgress: (ev) => send(Ipc.EventProgress, ev),
-      onDone: (ev) => {
-        send(Ipc.EventDone, ev);
+      return await conversions.start(req, {
+        onProgress: (ev) => send(Ipc.EventProgress, ev),
+        onDone: (ev) => {
+          send(Ipc.EventDone, ev);
 
-        // Show notification if enabled
-        const settings = loadSettings();
-        if (settings.notificationsEnabled && Notification.isSupported()) {
-          const locale = normalizeLocale(app.getLocale());
-          const filename = path.basename(ev.outputPath);
-          const notification = new Notification({
-            title: t('notification.done.title', locale),
-            body: t('notification.done.body', locale, { filename }),
-            silent: false
-          });
-          notification.show();
-        }
-      },
-      onError: (ev) => send(Ipc.EventError, ev)
-    });
-  });
+          // Show notification if enabled
+          const settings = loadSettings();
+          if (settings.notificationsEnabled && Notification.isSupported()) {
+            const locale = normalizeLocale(app.getLocale());
+            const filename = path.basename(ev.outputPath);
+            const notification = new Notification({
+              title: t('notification.done.title', locale),
+              body: t('notification.done.body', locale, { filename }),
+              silent: false
+            });
+            notification.show();
+          }
+        },
+        onError: (ev) => send(Ipc.EventError, ev)
+      });
+    }
+  );
 
   ipcMain.handle(Ipc.CancelConversion, async (_event, jobId: unknown): Promise<void> => {
     if (!isNonEmptyString(jobId)) {
@@ -175,4 +189,3 @@ export function registerIpcHandlers(getMainWindowWebContents: () => Electron.Web
   // Minimal "about" plumbing for future: keep one place to read logs.
   ipcMain.handle('audioConverter:getAppVersion', async (): Promise<string> => app.getVersion());
 }
-

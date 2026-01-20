@@ -1,6 +1,11 @@
 import log from 'electron-log';
 
-import type { ConversionDoneEvent, ConversionErrorEvent, ConversionProgressEvent, StartConversionRequest } from '../../shared/types';
+import type {
+  ConversionDoneEvent,
+  ConversionErrorEvent,
+  ConversionProgressEvent,
+  StartConversionRequest
+} from '../../shared/types';
 import { AppError } from '../appError';
 import { getFfmpegPath, getFfprobePath } from './binaries';
 import { ConversionJob, type ConversionJobCallbacks } from './ConversionJob';
@@ -51,4 +56,3 @@ export class ConversionManager {
     await current.job.cancel();
   }
 }
-

@@ -34,4 +34,3 @@ export interface AudioConverterApi {
   onConversionDone: (listener: (ev: ConversionDoneEvent) => void) => Unsubscribe;
   onConversionError: (listener: (ev: ConversionErrorEvent) => void) => Unsubscribe;
 }
-

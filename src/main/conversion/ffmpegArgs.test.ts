@@ -21,4 +21,3 @@ describe('ffmpegArgs', () => {
     expect(() => ensureM4aOutputPath('/tmp/out.m4a')).not.toThrow();
   });
 });
-

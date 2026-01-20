@@ -29,4 +29,3 @@ describe('FfmpegProgressParser', () => {
     expect(snaps).toEqual([{ outTimeMs: 1500, progress: 'continue' }]);
   });
 });
-

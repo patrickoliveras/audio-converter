@@ -2,7 +2,10 @@ import { spawn } from 'node:child_process';
 
 import { AppError } from '../appError';
 
-export async function getDurationMs(ffprobePath: string, inputPath: string): Promise<number | null> {
+export async function getDurationMs(
+  ffprobePath: string,
+  inputPath: string
+): Promise<number | null> {
   return await new Promise((resolve, reject) => {
     const args = [
       '-v',
@@ -55,4 +58,3 @@ export async function getDurationMs(ffprobePath: string, inputPath: string): Pro
     });
   });
 }
-

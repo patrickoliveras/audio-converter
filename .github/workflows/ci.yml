@@ -19,6 +19,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Format (check)
+        run: npm run format:check
+
       - name: Typecheck
         run: npm run typecheck
 
@@ -31,3 +34,25 @@ jobs:
       - name: Build
         run: npm run build
 
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build

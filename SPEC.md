@@ -1,11 +1,13 @@
 ## Audio Converter (Electron) — Product + Technical Spec
 
 ### TL;DR (what we’re building)
+
 - **A small, offline desktop app** that converts **one audio file at a time** to **`.m4a` (AAC)**.
 - **Self-contained**: ships with the required encoder/decoder binaries (no “install ffmpeg” step).
 - **User-friendly + simple**: drag/drop or “Choose file”, optional output folder picker, progress, cancel, and clear errors.
 
 ### Goals
+
 - **Single-file conversion**: exactly one input file per run (no batch queue in MVP).
 - **Input formats**: at least `.wav`; likely also `.aiff`, `.flac`, `.mp3`, `.m4a`, `.ogg` as “works if FFmpeg supports it”.
 - **Output format**: `.m4a` using **AAC-LC**.
@@ -14,6 +16,7 @@
 - **Cross-platform friendly**: design for macOS first, but don’t hard-code assumptions that block Windows/Linux.
 
 ### Non-goals (MVP)
+
 - **Batch conversion / queues**
 - **Tag editing** (artist/album/cover art)
 - **Audio editing** (trim, normalize, effects)
@@ -21,6 +24,7 @@
 - **“All possible codecs” UI** (we keep knobs minimal)
 
 ### User experience (MVP)
+
 - **Entry points**
   - Drag a file onto the window, or click **Choose File…**
   - Optional: choose **Output Folder…** (default: same folder as input)
@@ -33,6 +37,7 @@
   - If output exists: prompt **Overwrite** or **Choose different name**
 
 ### Functional requirements
+
 - **FR1**: User can select a single input audio file.
 - **FR2**: App converts the file to `.m4a` (AAC) and writes it to disk.
 - **FR3**: App displays conversion progress (best-effort, but should be accurate for common files).
@@ -41,6 +46,7 @@
 - **FR6**: App is usable without installing external dependencies (FFmpeg is bundled).
 
 ### Output defaults (keep it simple)
+
 - **Codec**: AAC-LC (`-c:a aac`)
 - **Bitrate**: default **256 kbps** (`-b:a 256k`)
 - **Container**: `.m4a`
@@ -49,6 +55,7 @@
   - `-movflags +faststart` (harmless for local playback, good default)
 
 ### File naming rules
+
 - Default output path: same directory, same basename:
   - `My Recording.wav` → `My Recording.m4a`
 - If output exists:
@@ -56,7 +63,8 @@
   - (Optional later) auto-suffix: `My Recording (1).m4a`
 
 ### Technical approach (high-level architecture first)
-- **Renderer (UI)**: shows controls/state; *never* touches filesystem directly.
+
+- **Renderer (UI)**: shows controls/state; _never_ touches filesystem directly.
 - **Preload**: exposes a minimal, typed API (`window.audioConverter.*`) to the renderer.
 - **Main process**:
   - Owns file dialogs and path access
@@ -65,6 +73,7 @@
 - **Conversion worker**: a small module in main process that spawns FFmpeg and parses progress.
 
 ### IPC contract (example)
+
 - `selectInputFile() -> { path, name } | null`
 - `selectOutputFolder() -> { path } | null`
 - `startConversion({ inputPath, outputPath, bitrateKbps }) -> { jobId }`
@@ -75,6 +84,7 @@
   - `conversionError({ jobId, message, code })`
 
 ### Conversion implementation details
+
 - **Duration**: use **FFprobe** to read duration up-front (for progress %):
   - `ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 <input>`
 - **Conversion**: spawn FFmpeg with structured progress output:
@@ -86,20 +96,24 @@
   - Ensure partial output file is removed only if we can do so safely (best-effort)
 
 ### Self-contained FFmpeg strategy (packaging)
+
 We will **bundle FFmpeg + FFprobe** with the app so end-users don’t install anything.
 
 Recommended options (pick one early and stick to it):
+
 - **Option A (pragmatic)**: use `ffmpeg-static` + `ffprobe-static`
   - Configure Electron packaging to **unpack** the binaries from ASAR and reference the correct path at runtime.
 - **Option B (more explicit)**: copy platform binaries into `resources/ffmpeg/` at build time
   - Use `extraResources` (electron-builder) or equivalent to ship them outside ASAR.
 
 Notes:
+
 - **Licensing**: FFmpeg builds may be LGPL/GPL depending on configuration. We must:
   - Include required license notices in the app distribution
   - Ensure our chosen binaries’ license is compatible with how we ship/distribute the app
 
 ### Repo structure (proposed)
+
 - `src/main/` — Electron main process (window + conversion orchestration)
 - `src/preload/` — safe API bridge
 - `src/renderer/` — UI
@@ -108,18 +122,21 @@ Notes:
 - `docs/` — architecture notes, release checklist (optional)
 
 ### Security posture (Electron hygiene)
+
 - `contextIsolation: true`, `nodeIntegration: false`, `sandbox: true` (where feasible)
 - Preload exposes **only** the methods we need; validate all IPC payloads
 - Restrict navigation/new windows; disable `remote` module
 - Add a strict Content Security Policy in renderer (no inline scripts)
 
 ### Observability + support (keep it lightweight)
+
 - **Local logs** (e.g., `electron-log`)
   - Log start/end/error for each conversion with a stable job id
   - Provide a UI/menu item: **Help → Reveal Logs**
 - **User-visible errors** are friendly; logs contain the real stack/ffmpeg stderr
 
 ### “Keep the project healthy” guardrails (what we’ll put in place early)
+
 - **TypeScript** with `strict: true`
 - **Lint + format**:
   - ESLint + Prettier (and consistent editor settings)
@@ -143,6 +160,7 @@ Notes:
   - Release checklist doc (signing/notarization can be a later milestone)
 
 ### Milestones (incremental, simple)
+
 - **M1: Skeleton app**
   - Electron window + renderer UI
   - File picker, output picker, basic state machine
@@ -156,6 +174,7 @@ Notes:
   - CI, lint/typecheck, a handful of unit tests, logging + “Reveal Logs”
 
 ### Acceptance criteria (MVP)
+
 - On a clean machine, user can:
   - Launch the app
   - Select a `.wav` file
@@ -165,7 +184,7 @@ Notes:
   - Cancel mid-way without the app hanging
 
 ### Open questions (decide before M2/M3)
+
 - Target platforms for first release: **macOS only**, or macOS + Windows?
 - Default bitrate: **256k** vs **192k** (smaller files) — UX tradeoff.
 - Overwrite behavior: always prompt, or auto-suffix by default?
-

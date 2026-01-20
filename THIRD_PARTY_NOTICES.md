@@ -10,4 +10,3 @@ This app depends on the following key third-party components:
   - Used for local app logs (helps debug conversion failures).
 
 If you add/remove major dependencies, update this file accordingly.
-

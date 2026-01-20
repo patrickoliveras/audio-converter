@@ -70,16 +70,16 @@ async function main() {
   // 3) Windows .ico via png-to-ico
   console.log('Creating Windows .ico...');
   const pngToIco = (await import('png-to-ico')).default;
-  
+
   // Create multi-size PNGs for ICO (256, 128, 64, 48, 32, 16)
   const icoSizes = [256, 128, 64, 48, 32, 16];
   const icoPngs = [];
-  
+
   for (const size of icoSizes) {
     const buf = await sharp(svgBuffer).resize(size, size).png().toBuffer();
     icoPngs.push(buf);
   }
-  
+
   const icoBuffer = await pngToIco(icoPngs);
   const icoPath = path.join(resourcesDir, 'icon.ico');
   await fs.writeFile(icoPath, icoBuffer);

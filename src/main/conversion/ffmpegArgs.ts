@@ -47,7 +47,11 @@ export function validateStartRequest(req: StartConversionRequest): void {
   if (typeof req.outputPath !== 'string' || req.outputPath.length === 0) {
     throw new AppError('INVALID_OUTPUT', 'Output path is required.');
   }
-  if (typeof req.bitrateKbps !== 'number' || !Number.isFinite(req.bitrateKbps) || req.bitrateKbps <= 0) {
+  if (
+    typeof req.bitrateKbps !== 'number' ||
+    !Number.isFinite(req.bitrateKbps) ||
+    req.bitrateKbps <= 0
+  ) {
     throw new AppError('INVALID_BITRATE', 'Bitrate must be a positive number.');
   }
   if (typeof req.overwrite !== 'boolean') {
@@ -55,4 +59,3 @@ export function validateStartRequest(req: StartConversionRequest): void {
   }
   ensureM4aOutputPath(req.outputPath);
 }
-

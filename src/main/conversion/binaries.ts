@@ -33,4 +33,3 @@ export function getFfprobePath(): string {
   }
   return resolveAsarUnpackedPath(p);
 }
-
