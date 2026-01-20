@@ -16,8 +16,8 @@
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "dist": "npm run build && electron-builder --dir",
-    "release": "npm run build && electron-builder",
-    "release:zip": "npm run build && electron-builder --mac zip",
+    "release": "npm run build && electron-builder --publish never",
+    "release:zip": "npm run build && electron-builder --mac zip --publish never",
     "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
