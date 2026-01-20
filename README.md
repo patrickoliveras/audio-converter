@@ -30,6 +30,11 @@ Generate platform icons from `resources/icon.svg`:
 npm run icons
 ```
 
+### Contributing and security
+
+- Contributing guidelines: `CONTRIBUTING.md`
+- Security reporting: `SECURITY.md`
+
 ### Packaging
 
 Build a local distributable (dir):
@@ -42,6 +47,19 @@ Build release artifacts (DMG on macOS, NSIS on Windows, AppImage on Linux):
 
 ```bash
 npm run release
+```
+
+### Releases (GitHub)
+
+This repo publishes releases via Git tags:
+
+- Push a tag like `v0.2.0`
+- GitHub Actions builds a macOS ZIP (`release/*-mac.zip`) and attaches it to the GitHub Release
+
+Locally, you can also build the AirDrop-friendly ZIP with:
+
+```bash
+npm run release:zip
 ```
 
 ### Distributing on macOS via AirDrop (no Apple Developer ID)
@@ -85,3 +103,17 @@ Then try opening again.
 
 - **Apple Silicon vs Intel**: `arm64` builds won’t run on Intel Macs. Build an `x64` (or universal) mac target if you need to support Intel.
 - **Optional**: set `WAVESHIFT_SKIP_ADHOC_SIGN=1` to skip ad-hoc signing during packaging (not recommended for sharing builds).
+
+### Support / issues
+
+If something breaks, please open a GitHub issue and include:
+
+- Your OS version + CPU (Apple Silicon / Intel)
+- The app version (or Git commit)
+- The input file type
+- Relevant logs (Help → Reveal Logs)
+
+### License and third-party notices
+
+- License: MIT (see `LICENSE`)
+- Third-party notices: `THIRD_PARTY_NOTICES.md`
