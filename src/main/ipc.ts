@@ -186,6 +186,8 @@ export function registerIpcHandlers(
     };
   });
 
-  // Minimal "about" plumbing for future: keep one place to read logs.
+  // Keep a stable IPC surface for "About"/diagnostics UI. Even if we don't show
+  // an About dialog today, other parts of the UI (or future support flows) can
+  // rely on a single, versioned source of truth for app metadata.
   ipcMain.handle('audioConverter:getAppVersion', async (): Promise<string> => app.getVersion());
 }

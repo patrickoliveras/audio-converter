@@ -14,8 +14,11 @@ export const SUPPORTED_LOCALES: LocaleCode[] = ['en', 'es'];
 export const DEFAULT_LOCALE: LocaleCode = 'en';
 
 /**
- * Normalize a locale string (e.g. "es-MX" -> "es", "en-US" -> "en").
- * Falls back to default if not supported.
+ * Normalize a locale string (e.g. "es-MX" → "es", "en-US" → "en").
+ *
+ * We intentionally only support a small set of base languages; this converts
+ * common BCP 47 variants into a supported base language, falling back to
+ * `DEFAULT_LOCALE` when unsupported.
  */
 export function normalizeLocale(locale: string | undefined | null): LocaleCode {
   if (!locale) return DEFAULT_LOCALE;
@@ -36,7 +39,12 @@ export function normalizeLocale(locale: string | undefined | null): LocaleCode {
 
 /**
  * Get a translation for a key, with optional interpolation.
- * Example: t('notification.done.body', 'es', { filename: 'song.m4a' })
+ *
+ * Keys are derived from the default (`en`) locale for type safety, but we also
+ * accept raw strings so the UI can safely render unknown keys (e.g. during
+ * incremental localization work) without crashing.
+ *
+ * Example: `t('notification.done.body', 'es', { filename: 'song.m4a' })`
  */
 export function t(
   key: TranslationKey | string,
