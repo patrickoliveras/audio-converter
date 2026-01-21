@@ -5,6 +5,14 @@ updates:
     schedule:
       interval: 'weekly'
     open-pull-requests-limit: 10
+    ignore:
+      # ESLint v9 switches to the new flat config (eslint.config.*).
+      # We can migrate intentionally later; until then, avoid noisy/broken PRs.
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      # Tailwind v4 changes the CLI packaging/entrypoint; our build uses `npx tailwindcss`.
+      - dependency-name: 'tailwindcss'
+        update-types: ['version-update:semver-major']
     groups:
       dev-deps:
         dependency-type: 'development'
