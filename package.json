@@ -32,7 +32,7 @@
     "autoprefixer": "^10.4.20",
     "electron": "^30.0.0",
     "electron-builder": "^26.5.0",
-    "esbuild": "^0.21.5",
+    "esbuild": "^0.27.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "png-to-ico": "^2.1.8",
@@ -41,7 +41,7 @@
     "sharp": "^0.33.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.4.5",
-    "vitest": "^1.6.0"
+    "vitest": "^4.0.17"
   },
   "engines": {
     "node": ">=20"
