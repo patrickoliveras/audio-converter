@@ -25,4 +25,4 @@ assignees: ''
 
 ## Logs
 
-If possible, attach the relevant log lines (Help → Reveal Logs).
+If possible, attach the relevant log lines (Help → Reveal Logs). If the app won’t launch, include any terminal output from launching it.

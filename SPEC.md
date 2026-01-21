@@ -1,15 +1,15 @@
-## Audio Converter (Electron) — Product + Technical Spec
+## Waveshift (Electron) — Product + Technical Spec
 
 ### TL;DR (what we’re building)
 
 - **A small, offline desktop app** that converts **one audio file at a time** to **`.m4a` (AAC)**.
-- **Self-contained**: ships with the required encoder/decoder binaries (no “install ffmpeg” step).
+- **Self-contained**: ships with the required encoder/decoder binaries (no “install FFmpeg” step).
 - **User-friendly + simple**: drag/drop or “Choose file”, optional output folder picker, progress, cancel, and clear errors.
 
 ### Goals
 
 - **Single-file conversion**: exactly one input file per run (no batch queue in MVP).
-- **Input formats**: at least `.wav`; likely also `.aiff`, `.flac`, `.mp3`, `.m4a`, `.ogg` as “works if FFmpeg supports it”.
+- **Input formats**: at least `.wav`; likely also `.aiff`, `.flac`, `.mp3`, `.m4a`, `.ogg` (as supported by the bundled FFmpeg build).
 - **Output format**: `.m4a` using **AAC-LC**.
 - **Fast + reliable**: conversion happens in a background process, UI remains responsive.
 - **Safe by default**: no Node access in the renderer; strict IPC boundaries.
@@ -74,10 +74,22 @@
 
 ### IPC contract (example)
 
+These names are intentionally close to the current `window.audioConverter.*` API (preload bridge).
+
 - `selectInputFile() -> { path, name } | null`
 - `selectOutputFolder() -> { path } | null`
-- `startConversion({ inputPath, outputPath, bitrateKbps }) -> { jobId }`
-- `cancelConversion(jobId) -> void`
+- `selectOutputFile(defaultPath: string) -> { path } | null`
+- `suggestOutputPath(inputPath: string, outputFolderPath: string | null) -> string`
+- `pathExists(targetPath: string) -> boolean`
+- `startConversion({ inputPath, outputPath, bitrateKbps, overwrite }) -> { jobId }`
+- `cancelConversion(jobId: string) -> void`
+- `revealItemInFolder(targetPath: string) -> void`
+- `revealLogs() -> void`
+- Settings:
+  - `getSettings() -> AppSettings`
+  - `updateSettings(partial: Partial<AppSettings>) -> AppSettings`
+- i18n:
+  - `getI18n() -> { locale, translations }`
 - Events emitted to renderer:
   - `conversionProgress({ jobId, percent, outTimeMs })`
   - `conversionDone({ jobId, outputPath })`
@@ -89,8 +101,9 @@
   - `ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 <input>`
 - **Conversion**: spawn FFmpeg with structured progress output:
   - Use `-progress pipe:2 -nostats` and parse key/value lines:
-    - `out_time_ms=...`, `progress=continue|end`
-  - Compute percent as `out_time_ms / (duration_s * 1000)`, clamp 0..1
+    - `out_time_us=...` / `out_time_ms=...`, `progress=continue|end`
+    - Note: FFmpeg’s `-progress` keys aren’t perfectly consistent across builds. Some builds report `out_time_ms` in microseconds despite the name. Prefer `out_time_us` when present; otherwise treat `out_time_ms` as microseconds and normalize to milliseconds for UI/display.
+  - Compute percent as `outTimeMs / (duration_s * 1000)`, clamp to 0..1
 - **Cancel**:
   - Send `SIGTERM`, wait a short grace period, then `SIGKILL` if needed
   - Ensure partial output file is removed only if we can do so safely (best-effort)
@@ -99,12 +112,14 @@
 
 We will **bundle FFmpeg + FFprobe** with the app so end-users don’t install anything.
 
-Recommended options (pick one early and stick to it):
+Current approach (implemented):
 
-- **Option A (pragmatic)**: use `ffmpeg-static` + `ffprobe-static`
-  - Configure Electron packaging to **unpack** the binaries from ASAR and reference the correct path at runtime.
-- **Option B (more explicit)**: copy platform binaries into `resources/ffmpeg/` at build time
-  - Use `extraResources` (electron-builder) or equivalent to ship them outside ASAR.
+- Use `ffmpeg-static` + `ffprobe-static`.
+- Configure packaging to **unpack** the binaries from ASAR so they remain executable at runtime.
+
+Alternative (future, if we outgrow the static packages):
+
+- Copy platform binaries into `resources/ffmpeg/` at build time and ship them via `extraResources` (electron-builder), outside ASAR.
 
 Notes:
 
@@ -112,14 +127,14 @@ Notes:
   - Include required license notices in the app distribution
   - Ensure our chosen binaries’ license is compatible with how we ship/distribute the app
 
-### Repo structure (proposed)
+### Repo structure (current)
 
 - `src/main/` — Electron main process (window + conversion orchestration)
 - `src/preload/` — safe API bridge
 - `src/renderer/` — UI
 - `src/shared/` — shared types, validation
-- `resources/` — icons + (if Option B) ffmpeg binaries
-- `docs/` — architecture notes, release checklist (optional)
+- `src/types/` — TypeScript module declarations for bundled binaries
+- `resources/` — icons and other packaged resources
 
 ### Security posture (Electron hygiene)
 
@@ -169,7 +184,7 @@ Notes:
   - Handle overwrite prompt and common failures
 - **M3: Self-contained packaging**
   - Bundle FFmpeg reliably for macOS (and set the pattern for Windows/Linux)
-  - Verify conversion works in the packaged app, not just `npm run dev`
+  - Verify conversion works in the packaged app, not just `npm run start`
 - **M4: Project health**
   - CI, lint/typecheck, a handful of unit tests, logging + “Reveal Logs”
 

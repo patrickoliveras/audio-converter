@@ -1,6 +1,7 @@
 ## Summary
 
--
+- What does this change do, and why?
+- Any UX/behavior changes worth calling out?
 
 ## Test plan
 
@@ -12,4 +13,5 @@
 
 ## Notes
 
--
+- Links to related issues/specs (if any)
+- Screenshots/recordings (if UI changes)
