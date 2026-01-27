@@ -26,8 +26,8 @@
     "ffprobe-static": "^3.1.0"
   },
   "devDependencies": {
-    "@types/node": "^25.0.9",
-    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "@types/node": "^25.0.10",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.53.1",
     "autoprefixer": "^10.4.20",
     "electron": "^40.0.0",
@@ -37,11 +37,11 @@
     "eslint-config-prettier": "^10.1.8",
     "png-to-ico": "^3.0.1",
     "postcss": "^8.4.49",
-    "prettier": "^3.2.5",
+    "prettier": "^3.8.1",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.4.5",
-    "vitest": "^4.0.17"
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=20"
