@@ -30,7 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.1",
     "autoprefixer": "^10.4.20",
-    "electron": "^40.0.0",
+    "electron": "^40.8.5",
     "electron-builder": "^26.5.0",
     "esbuild": "^0.27.2",
     "eslint": "^8.57.0",
